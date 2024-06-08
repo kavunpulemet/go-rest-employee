@@ -42,9 +42,9 @@ func (s *Server) Shutdown(ctx context.Context) error {
 }
 
 func (s *Server) HandleEmployees(ctx utils.MyContext, service service.EmployeeService) {
-	s.router.HandleFunc("/employees/", handler.Create(service, ctx)).Methods(http.MethodPost)
-	s.router.HandleFunc("/employees/companies/{companyId}/", handler.GetByCompany(service, ctx)).Methods(http.MethodGet)
-	s.router.HandleFunc("/employees/departments/{departmentName}/", handler.GetByDepartment(service, ctx)).Methods(http.MethodGet)
-	s.router.HandleFunc("/employees/{id}/", handler.Update(service, ctx)).Methods(http.MethodPut)
-	s.router.HandleFunc("/employees/{id}/", handler.Delete(service, ctx)).Methods(http.MethodDelete)
+	s.router.HandleFunc("/employees/", handler.Create(ctx, service)).Methods(http.MethodPost)
+	s.router.HandleFunc("/employees/companies/{companyId}/", handler.GetByCompany(ctx, service)).Methods(http.MethodGet)
+	s.router.HandleFunc("/employees/departments/{departmentName}/", handler.GetByDepartment(ctx, service)).Methods(http.MethodGet)
+	s.router.HandleFunc("/employees/{id}/", handler.Update(ctx, service)).Methods(http.MethodPut)
+	s.router.HandleFunc("/employees/{id}/", handler.Delete(ctx, service)).Methods(http.MethodDelete)
 }

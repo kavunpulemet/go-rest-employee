@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-func Create(service service.EmployeeService, ctx utils.MyContext) http.HandlerFunc {
+func Create(ctx utils.MyContext, service service.EmployeeService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var employee models.Employee
 		if err := json.NewDecoder(r.Body).Decode(&employee); err != nil {
@@ -37,7 +37,7 @@ func Create(service service.EmployeeService, ctx utils.MyContext) http.HandlerFu
 	}
 }
 
-func GetByCompany(service service.EmployeeService, ctx utils.MyContext) http.HandlerFunc {
+func GetByCompany(ctx utils.MyContext, service service.EmployeeService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		companyId, err := strconv.Atoi(mux.Vars(r)["companyId"])
 		if err != nil {
@@ -61,7 +61,7 @@ func GetByCompany(service service.EmployeeService, ctx utils.MyContext) http.Han
 	}
 }
 
-func GetByDepartment(service service.EmployeeService, ctx utils.MyContext) http.HandlerFunc {
+func GetByDepartment(ctx utils.MyContext, service service.EmployeeService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		departmentName := mux.Vars(r)["departmentName"]
 
@@ -81,7 +81,7 @@ func GetByDepartment(service service.EmployeeService, ctx utils.MyContext) http.
 	}
 }
 
-func Update(service service.EmployeeService, ctx utils.MyContext) http.HandlerFunc {
+func Update(ctx utils.MyContext, service service.EmployeeService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(mux.Vars(r)["id"])
 		if err != nil {
@@ -110,7 +110,7 @@ func Update(service service.EmployeeService, ctx utils.MyContext) http.HandlerFu
 	}
 }
 
-func Delete(service service.EmployeeService, ctx utils.MyContext) http.HandlerFunc {
+func Delete(ctx utils.MyContext, service service.EmployeeService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(mux.Vars(r)["id"])
 		if err != nil {

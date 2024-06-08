@@ -138,7 +138,7 @@ func (r *Repository) Update(employeeId int, input repository.UpdateEmployee) err
 		}
 	}
 
-	if input.Passport.Type != "" && input.Passport.Number != "" {
+	if input.Passport.Type != "" || input.Passport.Number != "" {
 		passport := input.Passport
 		var passportUpdates []string
 		args = []interface{}{}
@@ -165,7 +165,7 @@ func (r *Repository) Update(employeeId int, input repository.UpdateEmployee) err
 		}
 	}
 
-	if input.Department.Name != "" && input.Department.Phone != "" {
+	if input.Department.Name != "" || input.Department.Phone != "" {
 		department := input.Department
 		var departmentUpdates []string
 		args = []interface{}{}
