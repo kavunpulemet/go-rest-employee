@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gorilla/mux"
 	"go-rest-employee/pkg/api/handler"
+	"go-rest-employee/pkg/api/utils"
 	"go-rest-employee/pkg/service"
 	"net/http"
 	"time"
@@ -36,10 +37,10 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	return s.httpServer.Shutdown(ctx)
 }
 
-func (s *Server) HandleEmployees(service service.EmployeeService) {
-	s.router.HandleFunc("/employees/", handler.Create(service)).Methods(http.MethodPost)
-	s.router.HandleFunc("/employees/companies/{companyId}/", handler.GetByCompany(service)).Methods(http.MethodGet)
-	s.router.HandleFunc("/employees/departments/{departmentName}/", handler.GetByDepartment(service)).Methods(http.MethodGet)
-	s.router.HandleFunc("/employees/{id}/", handler.Update(service)).Methods(http.MethodPut)
-	s.router.HandleFunc("/employees/{id}/", handler.Delete(service)).Methods(http.MethodDelete)
+func (s *Server) HandleEmployees(service service.EmployeeService, ctx utils.MyContext) {
+	s.router.HandleFunc("/employees/", handler.Create(service, ctx)).Methods(http.MethodPost)
+	s.router.HandleFunc("/employees/companies/{companyId}/", handler.GetByCompany(service, ctx)).Methods(http.MethodGet)
+	s.router.HandleFunc("/employees/departments/{departmentName}/", handler.GetByDepartment(service, ctx)).Methods(http.MethodGet)
+	s.router.HandleFunc("/employees/{id}/", handler.Update(service, ctx)).Methods(http.MethodPut)
+	s.router.HandleFunc("/employees/{id}/", handler.Delete(service, ctx)).Methods(http.MethodDelete)
 }

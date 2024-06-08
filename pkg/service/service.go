@@ -1,15 +1,16 @@
 package service
 
 import (
-	models "go-rest-employee"
+	"go-rest-employee/models"
 	"go-rest-employee/pkg/repository"
+	"go-rest-employee/pkg/service/mappers"
 )
 
 type EmployeeService interface {
-	Create(employee models.CreateEmployeeRequest) (int, error)
-	GetByCompany(companyId int) ([]models.EmployeeResponse, error)
-	GetByDepartment(departmentName string) ([]models.EmployeeResponse, error)
-	Update(employeeId int, input models.UpdateEmployeeInput) error
+	Create(employee models.Employee) (int, error)
+	GetByCompany(companyId int) ([]models.Employee, error)
+	GetByDepartment(departmentName string) ([]models.Employee, error)
+	Update(employeeId int, input models.Employee) error
 	Delete(employeeId int) error
 }
 
@@ -21,24 +22,29 @@ func NewEmployeeService(repo repository.EmployeeRepository) *ImplEmployee {
 	return &ImplEmployee{repo: repo}
 }
 
-func (s *ImplEmployee) Create(employee models.CreateEmployeeRequest) (int, error) {
-	return s.repo.Create(employee)
+func (s *ImplEmployee) Create(employee models.Employee) (int, error) {
+	return s.repo.Create(mappers.MapToCreateEmployee(employee))
 }
 
-func (s *ImplEmployee) GetByCompany(companyId int) ([]models.EmployeeResponse, error) {
-	return s.repo.GetByCompany(companyId)
+func (s *ImplEmployee) GetByCompany(companyId int) ([]models.Employee, error) {
+	employees, err := s.repo.GetByCompany(companyId)
+
+	return mappers.MapFromEmployeeResponse(employees), err
 }
 
-func (s *ImplEmployee) GetByDepartment(departmentName string) ([]models.EmployeeResponse, error) {
-	return s.repo.GetByDepartment(departmentName)
+func (s *ImplEmployee) GetByDepartment(departmentName string) ([]models.Employee, error) {
+	employees, err := s.repo.GetByDepartment(departmentName)
+
+	return mappers.MapFromEmployeeResponse(employees), err
 }
 
-func (s *ImplEmployee) Update(employeeId int, input models.UpdateEmployeeInput) error {
-	if err := input.Validate(); err != nil {
-		return err
-	}
+func (s *ImplEmployee) Update(employeeId int, input models.Employee) error {
+	update := mappers.MapToUpdateEmployee(input)
+	//if err := update.Validate(); err != nil {
+	//	return err
+	//}
 
-	return s.repo.Update(employeeId, input)
+	return s.repo.Update(employeeId, update)
 }
 
 func (s *ImplEmployee) Delete(employeeId int) error {

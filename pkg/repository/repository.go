@@ -4,15 +4,15 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	models "go-rest-employee"
+	repository "go-rest-employee/pkg/repository/models"
 	"strings"
 )
 
 type EmployeeRepository interface {
-	Create(employee models.CreateEmployeeRequest) (int, error)
-	GetByCompany(companyId int) ([]models.EmployeeResponse, error)
-	GetByDepartment(departmentName string) ([]models.EmployeeResponse, error)
-	Update(employeeId int, input models.UpdateEmployeeInput) error
+	Create(employee repository.CreateEmployee) (int, error)
+	GetByCompany(companyId int) ([]repository.EmployeeResponse, error)
+	GetByDepartment(departmentName string) ([]repository.EmployeeResponse, error)
+	Update(employeeId int, input repository.UpdateEmployee) error
 	Delete(employeeId int) error
 }
 
@@ -33,7 +33,7 @@ var createDepartment string
 //go:embed sql/CreateEmployee.sql
 var createEmployee string
 
-func (r *Repository) Create(employee models.CreateEmployeeRequest) (int, error) {
+func (r *Repository) Create(employee repository.CreateEmployee) (int, error) {
 	tx, err := r.db.Beginx()
 	if err != nil {
 		return 0, err
@@ -66,9 +66,9 @@ func (r *Repository) Create(employee models.CreateEmployeeRequest) (int, error) 
 //go:embed sql/GetByCompany.sql
 var getByCompany string
 
-func (r *Repository) GetByCompany(companyId int) ([]models.EmployeeResponse, error) {
+func (r *Repository) GetByCompany(companyId int) ([]repository.EmployeeResponse, error) {
 
-	var employees []models.EmployeeResponse
+	var employees []repository.EmployeeResponse
 
 	err := r.db.Select(&employees, getByCompany, companyId)
 
@@ -78,18 +78,15 @@ func (r *Repository) GetByCompany(companyId int) ([]models.EmployeeResponse, err
 //go:embed sql/GetByDepartment.sql
 var getByDepartment string
 
-func (r *Repository) GetByDepartment(departmentName string) ([]models.EmployeeResponse, error) {
-	var employees []models.EmployeeResponse
+func (r *Repository) GetByDepartment(departmentName string) ([]repository.EmployeeResponse, error) {
+	var employees []repository.EmployeeResponse
 
 	err := r.db.Select(&employees, getByDepartment, departmentName)
 
 	return employees, err
 }
 
-//go:embed sql/UpdateEmployee.sql
-var updateEmployee string
-
-func (r *Repository) Update(employeeId int, input models.UpdateEmployeeInput) error {
+func (r *Repository) Update(employeeId int, input repository.UpdateEmployee) error {
 	tx, err := r.db.Beginx()
 	if err != nil {
 		return err
@@ -102,34 +99,40 @@ func (r *Repository) Update(employeeId int, input models.UpdateEmployeeInput) er
 		}
 	}()
 
-	// Build the query for updating employees
+	fmt.Println(input.Name)
+	fmt.Println(&input.Name)
+	fmt.Println(input.CompanyId)
+	fmt.Println(&input.CompanyId)
+	fmt.Println(input.Passport)
+	fmt.Println(&input.Passport)
+
 	var employeeUpdates []string
 	var args []interface{}
 	argID := 1
 
-	if input.Name != nil {
+	if input.Name != "" {
 		employeeUpdates = append(employeeUpdates, fmt.Sprintf("name = $%d", argID))
-		args = append(args, *input.Name)
+		args = append(args, input.Name)
 		argID++
 	}
-	if input.Surname != nil {
+	if input.Surname != "" {
 		employeeUpdates = append(employeeUpdates, fmt.Sprintf("surname = $%d", argID))
-		args = append(args, *input.Surname)
+		args = append(args, input.Surname)
 		argID++
 	}
-	if input.Phone != nil {
+	if input.Phone != "" {
 		employeeUpdates = append(employeeUpdates, fmt.Sprintf("phone = $%d", argID))
-		args = append(args, *input.Phone)
+		args = append(args, input.Phone)
 		argID++
 	}
-	if input.CompanyId != nil {
+	if input.CompanyId != 0 {
 		employeeUpdates = append(employeeUpdates, fmt.Sprintf("company_id = $%d", argID))
-		args = append(args, *input.CompanyId)
+		args = append(args, input.CompanyId)
 		argID++
 	}
-	if input.DepartmentId != nil {
+	if input.DepartmentId != 0 {
 		employeeUpdates = append(employeeUpdates, fmt.Sprintf("department_id = $%d", argID))
-		args = append(args, *input.DepartmentId)
+		args = append(args, input.DepartmentId)
 		argID++
 	}
 
@@ -142,8 +145,7 @@ func (r *Repository) Update(employeeId int, input models.UpdateEmployeeInput) er
 		}
 	}
 
-	// Update passport if provided
-	if input.Passport != nil {
+	if input.Passport.Type != "" && input.Passport.Number != "" {
 		passport := input.Passport
 		var passportUpdates []string
 		args = []interface{}{}
@@ -170,8 +172,7 @@ func (r *Repository) Update(employeeId int, input models.UpdateEmployeeInput) er
 		}
 	}
 
-	// Update department if provided
-	if input.Department != nil {
+	if input.Department.Name != "" && input.Department.Phone != "" {
 		department := input.Department
 		var departmentUpdates []string
 		args = []interface{}{}
@@ -197,105 +198,6 @@ func (r *Repository) Update(employeeId int, input models.UpdateEmployeeInput) er
 			}
 		}
 	}
-
-	/*updateFields := []string{}
-	args := []interface{}{}
-	argId := 1
-
-	if input.Name != nil {
-		updateFields = append(updateFields, fmt.Sprintf("name = $%d", argId))
-		args = append(args, *input.Name)
-		argId++
-	}
-	if input.Surname != nil {
-		updateFields = append(updateFields, fmt.Sprintf("surname = $%d", argId))
-		args = append(args, *input.Surname)
-		argId++
-	}
-	if input.Phone != nil {
-		updateFields = append(updateFields, fmt.Sprintf("phone = $%d", argId))
-		args = append(args, *input.Phone)
-		argId++
-	}
-	if input.CompanyId != nil {
-		updateFields = append(updateFields, fmt.Sprintf("company_id = $%d", argId))
-		args = append(args, *input.CompanyId)
-		argId++
-	}
-
-	if len(updateFields) > 0 {
-		args = append(args, employeeId)
-		query := fmt.Sprintf("UPDATE employees SET %s WHERE id = $%d", strings.Join(updateFields, ", "), argId)
-		_, err = tx.Exec(query, args...)
-		if err != nil {
-			tx.Rollback()
-			return err
-		}
-	}
-
-	if input.Passport != nil {
-		passportUpdateFields := []string{}
-		passportArgs := []interface{}{}
-		passportArgId := 1
-
-		if input.Passport.Type != nil {
-			passportUpdateFields = append(passportUpdateFields, fmt.Sprintf("type = $%d", passportArgId))
-			passportArgs = append(passportArgs, *input.Passport.Type)
-			passportArgId++
-		}
-		if input.Passport.Number != nil {
-			passportUpdateFields = append(passportUpdateFields, fmt.Sprintf("number = $%d", passportArgId))
-			passportArgs = append(passportArgs, *input.Passport.Number)
-			passportArgId++
-		}
-
-		if len(passportUpdateFields) > 0 {
-			passportArgs = append(passportArgs, employeeId)
-			passportQuery := fmt.Sprintf("UPDATE passports SET %s WHERE id = (SELECT passport_id FROM employees WHERE id = $%d)", strings.Join(passportUpdateFields, ", "), passportArgId)
-			_, err = tx.Exec(passportQuery, passportArgs...)
-			if err != nil {
-				tx.Rollback()
-				return err
-			}
-		}
-	}
-
-	if input.Department != nil {
-		var departmentId int
-		err := tx.Get(&departmentId, `SELECT department_id FROM employees_departments WHERE employee_id = $1`, employeeId)
-		if err != nil {
-			tx.Rollback()
-			return err
-		}
-
-		departmentUpdateFields := []string{}
-		departmentArgs := []interface{}{}
-		departmentArgId := 1
-
-		if input.Department.Name != nil {
-			departmentUpdateFields = append(departmentUpdateFields, fmt.Sprintf("name = $%d", departmentArgId))
-			departmentArgs = append(departmentArgs, *input.Department.Name)
-			departmentArgId++
-		}
-		if input.Department.Phone != nil {
-			departmentUpdateFields = append(departmentUpdateFields, fmt.Sprintf("phone = $%d", departmentArgId))
-			departmentArgs = append(departmentArgs, *input.Department.Phone)
-			departmentArgId
-		}
-		if len(departmentUpdateFields) > 0 {
-			departmentArgs = append(departmentArgs, departmentId)
-			departmentQuery := fmt.Sprintf("UPDATE departments SET %s WHERE id = $%d", strings.Join(departmentUpdateFields, ", "), departmentArgId)
-			_, err = tx.Exec(departmentQuery, departmentArgs...)
-			if err != nil {
-				tx.Rollback()
-				return err
-			}
-		}
-	}
-
-	if err := tx.Commit(); err != nil {
-		return err
-	}*/
 
 	return nil
 }

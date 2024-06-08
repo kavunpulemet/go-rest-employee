@@ -7,23 +7,22 @@ import (
 	_ "github.com/lib/pq"
 	"go-rest-employee/config"
 	"go-rest-employee/pkg/api"
+	"go-rest-employee/pkg/api/utils"
 	"go-rest-employee/pkg/repository"
 	"go-rest-employee/pkg/service"
 	"go.uber.org/zap"
 )
 
 type App struct {
-	ctx        context.Context
+	ctx        utils.MyContext
 	server     *api.Server
 	repository *sqlx.DB
-	logger     *zap.SugaredLogger
 	settings   config.Settings
 }
 
 func NewApp(ctx context.Context, logger *zap.SugaredLogger, settings config.Settings) *App {
 	return &App{
-		ctx:      ctx,
-		logger:   logger,
+		ctx:      utils.NewMyContext(ctx, logger),
 		settings: settings,
 	}
 }
@@ -47,32 +46,32 @@ func (a *App) InitDatabase() error {
 func (a *App) InitService() {
 	s := service.NewEmployeeService(repository.NewRepository(a.repository))
 	a.server = api.NewServer()
-	a.server.HandleEmployees(s)
+	a.server.HandleEmployees(s, a.ctx)
 }
 
 func (a *App) Run() error {
 	go func() {
 		if err := a.server.Run(); err != nil {
-			a.logger.Fatalf("error occured while running http server: %s", err.Error())
+			a.ctx.Logger.Fatalf("error occured while running http server: %s", err.Error())
 		}
 	}()
 
-	a.logger.Info("run server")
+	a.ctx.Logger.Info("run server")
 	return nil
 }
 
 func (a *App) Shutdown(ctx context.Context) error {
 	err := a.server.Shutdown(ctx)
 	if err != nil {
-		a.logger.Errorf("Failed to disconnect from server %v", err)
+		a.ctx.Logger.Errorf("Failed to disconnect from server %v", err)
 		return err
 	}
 
 	err = a.repository.Close()
 	if err != nil {
-		a.logger.Errorf("failed to disconnect from bd %v", err)
+		a.ctx.Logger.Errorf("failed to disconnect from bd %v", err)
 	}
 
-	a.logger.Info("server shut down successfully")
+	a.ctx.Logger.Info("server shut down successfully")
 	return nil
 }
