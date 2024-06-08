@@ -99,13 +99,6 @@ func (r *Repository) Update(employeeId int, input repository.UpdateEmployee) err
 		}
 	}()
 
-	fmt.Println(input.Name)
-	fmt.Println(&input.Name)
-	fmt.Println(input.CompanyId)
-	fmt.Println(&input.CompanyId)
-	fmt.Println(input.Passport)
-	fmt.Println(&input.Passport)
-
 	var employeeUpdates []string
 	var args []interface{}
 	argID := 1

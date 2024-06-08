@@ -40,9 +40,6 @@ func (s *ImplEmployee) GetByDepartment(departmentName string) ([]models.Employee
 
 func (s *ImplEmployee) Update(employeeId int, input models.Employee) error {
 	update := mappers.MapToUpdateEmployee(input)
-	//if err := update.Validate(); err != nil {
-	//	return err
-	//}
 
 	return s.repo.Update(employeeId, update)
 }

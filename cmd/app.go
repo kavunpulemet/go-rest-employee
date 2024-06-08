@@ -45,8 +45,8 @@ func (a *App) InitDatabase() error {
 
 func (a *App) InitService() {
 	s := service.NewEmployeeService(repository.NewRepository(a.repository))
-	a.server = api.NewServer()
-	a.server.HandleEmployees(s, a.ctx)
+	a.server = api.NewServer(a.ctx)
+	a.server.HandleEmployees(a.ctx, s)
 }
 
 func (a *App) Run() error {

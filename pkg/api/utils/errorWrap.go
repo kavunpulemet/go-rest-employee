@@ -13,7 +13,7 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-func NewErrorResponse(w http.ResponseWriter, ctx MyContext, message string, statusCode int) {
+func NewErrorResponse(ctx MyContext, w http.ResponseWriter, message string, statusCode int) {
 	ctx.Logger.Error(message)
 
 	errRes := ErrorResponse{Message: message}

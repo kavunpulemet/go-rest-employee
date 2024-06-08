@@ -40,11 +40,3 @@ type UpdateEmployee struct {
 	Passport     Passport
 	Department   Department
 }
-
-//func (e UpdateEmployee) Validate() error {
-//	if e.Name == nil && e.Surname == nil && e.Phone == nil && e.CompanyId == nil && e.DepartmentId == nil && e.Passport == nil && e.Department == nil {
-//		return errors.New("update structure has no values")
-//	}
-//
-//	return nil
-//}
