@@ -1,9 +1,9 @@
-package service
+package employee
 
 import (
 	"go-rest-employee/models"
 	"go-rest-employee/pkg/repository"
-	"go-rest-employee/pkg/service/mappers"
+	mappers2 "go-rest-employee/pkg/service/employee/mappers"
 )
 
 type EmployeeService interface {
@@ -23,23 +23,23 @@ func NewEmployeeService(repo repository.EmployeeRepository) *ImplEmployee {
 }
 
 func (s *ImplEmployee) Create(employee models.Employee) (int, error) {
-	return s.repo.Create(mappers.MapToCreateEmployee(employee))
+	return s.repo.Create(mappers2.MapToCreateEmployee(employee))
 }
 
 func (s *ImplEmployee) GetByCompany(companyId int) ([]models.Employee, error) {
 	employees, err := s.repo.GetByCompany(companyId)
 
-	return mappers.MapFromEmployeeResponse(employees), err
+	return mappers2.MapFromEmployeeResponse(employees), err
 }
 
 func (s *ImplEmployee) GetByDepartment(departmentName string) ([]models.Employee, error) {
 	employees, err := s.repo.GetByDepartment(departmentName)
 
-	return mappers.MapFromEmployeeResponse(employees), err
+	return mappers2.MapFromEmployeeResponse(employees), err
 }
 
 func (s *ImplEmployee) Update(employeeId int, input models.Employee) error {
-	update := mappers.MapToUpdateEmployee(input)
+	update := mappers2.MapToUpdateEmployee(input)
 
 	return s.repo.Update(employeeId, update)
 }

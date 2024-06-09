@@ -5,12 +5,12 @@ import (
 	"github.com/gorilla/mux"
 	"go-rest-employee/models"
 	"go-rest-employee/pkg/api/utils"
-	"go-rest-employee/pkg/service"
+	"go-rest-employee/pkg/service/employee"
 	"net/http"
 	"strconv"
 )
 
-func Create(ctx utils.MyContext, service service.EmployeeService) http.HandlerFunc {
+func Create(ctx utils.MyContext, service employee.EmployeeService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var employee models.Employee
 		if err := json.NewDecoder(r.Body).Decode(&employee); err != nil {
@@ -35,7 +35,7 @@ func Create(ctx utils.MyContext, service service.EmployeeService) http.HandlerFu
 	}
 }
 
-func GetByCompany(ctx utils.MyContext, service service.EmployeeService) http.HandlerFunc {
+func GetByCompany(ctx utils.MyContext, service employee.EmployeeService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		companyId, err := strconv.Atoi(mux.Vars(r)["companyId"])
 		if err != nil {
@@ -56,7 +56,7 @@ func GetByCompany(ctx utils.MyContext, service service.EmployeeService) http.Han
 	}
 }
 
-func GetByDepartment(ctx utils.MyContext, service service.EmployeeService) http.HandlerFunc {
+func GetByDepartment(ctx utils.MyContext, service employee.EmployeeService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		departmentName := mux.Vars(r)["departmentName"]
 
@@ -73,7 +73,7 @@ func GetByDepartment(ctx utils.MyContext, service service.EmployeeService) http.
 	}
 }
 
-func Update(ctx utils.MyContext, service service.EmployeeService) http.HandlerFunc {
+func Update(ctx utils.MyContext, service employee.EmployeeService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(mux.Vars(r)["id"])
 		if err != nil {
@@ -99,7 +99,7 @@ func Update(ctx utils.MyContext, service service.EmployeeService) http.HandlerFu
 	}
 }
 
-func Delete(ctx utils.MyContext, service service.EmployeeService) http.HandlerFunc {
+func Delete(ctx utils.MyContext, service employee.EmployeeService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(mux.Vars(r)["id"])
 		if err != nil {

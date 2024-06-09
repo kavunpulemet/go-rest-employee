@@ -9,7 +9,7 @@ import (
 	"go-rest-employee/pkg/api"
 	"go-rest-employee/pkg/api/utils"
 	"go-rest-employee/pkg/repository"
-	"go-rest-employee/pkg/service"
+	"go-rest-employee/pkg/service/employee"
 	"go.uber.org/zap"
 )
 
@@ -44,7 +44,7 @@ func (a *App) InitDatabase() error {
 }
 
 func (a *App) InitService() {
-	s := service.NewEmployeeService(repository.NewRepository(a.repository))
+	s := employee.NewEmployeeService(repository.NewRepository(a.repository))
 	a.server = api.NewServer(a.ctx)
 	a.server.HandleEmployees(a.ctx, s)
 }

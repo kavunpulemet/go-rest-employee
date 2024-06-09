@@ -20,7 +20,7 @@ func NewErrorResponse(ctx MyContext, w http.ResponseWriter, message string, stat
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set(ContentType, ApplicationJSON)
 	w.WriteHeader(statusCode)
 	w.Write(jsonErrRes)
 }

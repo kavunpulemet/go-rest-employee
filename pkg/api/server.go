@@ -7,7 +7,7 @@ import (
 	"go-rest-employee/pkg/api/handler"
 	"go-rest-employee/pkg/api/middlewares"
 	"go-rest-employee/pkg/api/utils"
-	"go-rest-employee/pkg/service"
+	"go-rest-employee/pkg/service/employee"
 	"net/http"
 	"time"
 )
@@ -48,7 +48,7 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	return s.httpServer.Shutdown(ctx)
 }
 
-func (s *Server) HandleEmployees(ctx utils.MyContext, service service.EmployeeService) {
+func (s *Server) HandleEmployees(ctx utils.MyContext, service employee.EmployeeService) {
 	s.router.HandleFunc("/employees/", handler.Create(ctx, service)).Methods(http.MethodPost)
 	s.router.HandleFunc("/employees/companies/{companyId}/", handler.GetByCompany(ctx, service)).Methods(http.MethodGet)
 	s.router.HandleFunc("/employees/departments/{departmentName}/", handler.GetByDepartment(ctx, service)).Methods(http.MethodGet)

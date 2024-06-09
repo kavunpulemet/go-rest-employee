@@ -99,9 +99,11 @@ func (r *Repository) Update(employeeId int, input repository.UpdateEmployee) err
 		}
 	}()
 
-	var employeeUpdates []string
-	var args []interface{}
-	argID := 1
+	var (
+		employeeUpdates []string
+		args            []interface{}
+		argID           = 1
+	)
 
 	if input.Name != "" {
 		employeeUpdates = append(employeeUpdates, fmt.Sprintf("name = $%d", argID))
@@ -139,8 +141,10 @@ func (r *Repository) Update(employeeId int, input repository.UpdateEmployee) err
 	}
 
 	if input.Passport.Type != "" || input.Passport.Number != "" {
-		passport := input.Passport
-		var passportUpdates []string
+		var (
+			passport        = input.Passport
+			passportUpdates []string
+		)
 		args = []interface{}{}
 		argID = 1
 
@@ -166,8 +170,10 @@ func (r *Repository) Update(employeeId int, input repository.UpdateEmployee) err
 	}
 
 	if input.Department.Name != "" || input.Department.Phone != "" {
-		department := input.Department
-		var departmentUpdates []string
+		var (
+			department        = input.Department
+			departmentUpdates []string
+		)
 		args = []interface{}{}
 		argID = 1
 
