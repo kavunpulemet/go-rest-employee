@@ -24,13 +24,11 @@ func Create(ctx utils.MyContext, service service.EmployeeService) http.HandlerFu
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-
 		response := map[string]interface{}{
 			"id": id,
 		}
-		if err = json.NewEncoder(w).Encode(response); err != nil {
+
+		if err = utils.WriteResponse(w, http.StatusOK, response); err != nil {
 			utils.NewErrorResponse(ctx, w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -51,10 +49,7 @@ func GetByCompany(ctx utils.MyContext, service service.EmployeeService) http.Han
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-
-		if err = json.NewEncoder(w).Encode(employees); err != nil {
+		if err = utils.WriteResponse(w, http.StatusOK, employees); err != nil {
 			utils.NewErrorResponse(ctx, w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -71,10 +66,7 @@ func GetByDepartment(ctx utils.MyContext, service service.EmployeeService) http.
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-
-		if err = json.NewEncoder(w).Encode(employees); err != nil {
+		if err = utils.WriteResponse(w, http.StatusOK, employees); err != nil {
 			utils.NewErrorResponse(ctx, w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -100,10 +92,7 @@ func Update(ctx utils.MyContext, service service.EmployeeService) http.HandlerFu
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-
-		if err = json.NewEncoder(w).Encode(utils.StatusResponse{Status: "ok"}); err != nil {
+		if err = utils.WriteResponse(w, http.StatusOK, utils.StatusResponse{Status: "ok"}); err != nil {
 			utils.NewErrorResponse(ctx, w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -123,10 +112,7 @@ func Delete(ctx utils.MyContext, service service.EmployeeService) http.HandlerFu
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-
-		if err = json.NewEncoder(w).Encode(utils.StatusResponse{Status: "ok"}); err != nil {
+		if err = utils.WriteResponse(w, http.StatusOK, utils.StatusResponse{Status: "ok"}); err != nil {
 			utils.NewErrorResponse(ctx, w, err.Error(), http.StatusInternalServerError)
 			return
 		}

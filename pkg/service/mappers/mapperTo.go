@@ -5,39 +5,39 @@ import (
 	repository "go-rest-employee/pkg/repository/models"
 )
 
-func MapToCreateEmployee(input models.Employee) repository.CreateEmployee {
+func MapToCreateEmployee(serviceEmployee models.Employee) repository.CreateEmployee {
 	return repository.CreateEmployee{
-		Name:      input.Name,
-		Surname:   input.Surname,
-		Phone:     input.Phone,
-		CompanyId: input.CompanyId,
+		Name:      serviceEmployee.Name,
+		Surname:   serviceEmployee.Surname,
+		Phone:     serviceEmployee.Phone,
+		CompanyId: serviceEmployee.CompanyId,
 		Passport: repository.Passport{
-			Id:     input.Passport.Id,
-			Type:   input.Passport.Type,
-			Number: input.Passport.Number,
+			Id:     serviceEmployee.Passport.Id,
+			Type:   serviceEmployee.Passport.Type,
+			Number: serviceEmployee.Passport.Number,
 		},
 		Department: repository.Department{
-			Id:    input.Department.Id,
-			Name:  input.Department.Name,
-			Phone: input.Department.Phone,
+			Id:    serviceEmployee.Department.Id,
+			Name:  serviceEmployee.Department.Name,
+			Phone: serviceEmployee.Department.Phone,
 		},
 	}
 }
 
-func MapToUpdateEmployee(input models.Employee) repository.UpdateEmployee {
+func MapToUpdateEmployee(serviceEmployee models.Employee) repository.UpdateEmployee {
 	return repository.UpdateEmployee{
-		Name:         input.Name,
-		Surname:      input.Surname,
-		Phone:        input.Phone,
-		CompanyId:    input.CompanyId,
-		DepartmentId: input.Department.Id,
+		Name:         serviceEmployee.Name,
+		Surname:      serviceEmployee.Surname,
+		Phone:        serviceEmployee.Phone,
+		CompanyId:    serviceEmployee.CompanyId,
+		DepartmentId: serviceEmployee.Department.Id,
 		Passport: repository.Passport{
-			Type:   input.Passport.Type,
-			Number: input.Passport.Number,
+			Type:   serviceEmployee.Passport.Type,
+			Number: serviceEmployee.Passport.Number,
 		},
 		Department: repository.Department{
-			Name:  input.Department.Name,
-			Phone: input.Department.Phone,
+			Name:  serviceEmployee.Department.Name,
+			Phone: serviceEmployee.Department.Phone,
 		},
 	}
 }

@@ -3,12 +3,19 @@ package api
 import (
 	"context"
 	"github.com/gorilla/mux"
+	"github.com/spf13/viper"
 	"go-rest-employee/pkg/api/handler"
 	"go-rest-employee/pkg/api/middlewares"
 	"go-rest-employee/pkg/api/utils"
 	"go-rest-employee/pkg/service"
 	"net/http"
 	"time"
+)
+
+const (
+	maxHeaderBytes = 1 << 20 // 1 MB
+	readTimeout    = 10 * time.Second
+	writeTimeout   = 10 * time.Second
 )
 
 type Server struct {
@@ -23,10 +30,10 @@ func NewServer(ctx utils.MyContext) *Server {
 
 	return &Server{
 		httpServer: &http.Server{
-			Addr:           ":80",
-			MaxHeaderBytes: 1 << 20, // 1 MB
-			ReadTimeout:    10 * time.Second,
-			WriteTimeout:   10 * time.Second,
+			Addr:           viper.GetString("db"),
+			MaxHeaderBytes: maxHeaderBytes,
+			ReadTimeout:    readTimeout,
+			WriteTimeout:   writeTimeout,
 			Handler:        wrappedRouter,
 		},
 		router: router,

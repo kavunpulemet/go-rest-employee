@@ -5,27 +5,27 @@ import (
 	repository "go-rest-employee/pkg/repository/models"
 )
 
-func MapFromEmployeeResponse(input []repository.EmployeeResponse) []models.Employee {
-	output := make([]models.Employee, len(input))
-	for i, repoEmp := range input {
-		output[i] = models.Employee{
-			Id:        repoEmp.Id,
-			Name:      repoEmp.Name,
-			Surname:   repoEmp.Surname,
-			Phone:     repoEmp.Phone,
-			CompanyId: repoEmp.CompanyId,
+func MapFromEmployeeResponse(repositoryEmployees []repository.EmployeeResponse) []models.Employee {
+	serviceEmployees := make([]models.Employee, len(repositoryEmployees))
+	for i, repositoryEmployee := range repositoryEmployees {
+		serviceEmployees[i] = models.Employee{
+			Id:        repositoryEmployee.Id,
+			Name:      repositoryEmployee.Name,
+			Surname:   repositoryEmployee.Surname,
+			Phone:     repositoryEmployee.Phone,
+			CompanyId: repositoryEmployee.CompanyId,
 			Passport: models.Passport{
-				Id:     repoEmp.Passport.Id,
-				Type:   repoEmp.Passport.Type,
-				Number: repoEmp.Passport.Number,
+				Id:     repositoryEmployee.Passport.Id,
+				Type:   repositoryEmployee.Passport.Type,
+				Number: repositoryEmployee.Passport.Number,
 			},
 			Department: models.Department{
-				Id:    repoEmp.Department.Id,
-				Name:  repoEmp.Department.Name,
-				Phone: repoEmp.Department.Phone,
+				Id:    repositoryEmployee.Department.Id,
+				Name:  repositoryEmployee.Department.Name,
+				Phone: repositoryEmployee.Department.Phone,
 			},
 		}
 	}
 
-	return output
+	return serviceEmployees
 }
